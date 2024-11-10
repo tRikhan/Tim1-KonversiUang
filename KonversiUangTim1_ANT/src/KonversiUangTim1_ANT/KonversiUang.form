@@ -207,7 +207,7 @@
               <Font name="Segoe UI" size="25" style="1"/>
             </Property>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="10">
+              <StringArray count="16">
                 <StringItem index="0" value="IDR - Indonesia"/>
                 <StringItem index="1" value="USD - Dollar Amerika"/>
                 <StringItem index="2" value="EUR - Euro"/>
@@ -218,6 +218,12 @@
                 <StringItem index="7" value="RUB - Rusia"/>
                 <StringItem index="8" value="BRL - Brazil"/>
                 <StringItem index="9" value="ZAR - Afrika Selatan"/>
+                <StringItem index="10" value="ZMK - Zambia"/>
+                <StringItem index="11" value="CAD - Canadian"/>
+                <StringItem index="12" value="NGN - Nigerian"/>
+                <StringItem index="13" value="MXN - Mexcan Peso"/>
+                <StringItem index="14" value="CHF - Swiss Franc"/>
+                <StringItem index="15" value="AUD - Australian"/>
               </StringArray>
             </Property>
           </Properties>
@@ -236,7 +242,7 @@
               <Font name="Segoe UI" size="25" style="1"/>
             </Property>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="10">
+              <StringArray count="16">
                 <StringItem index="0" value="IDR - Indonesia"/>
                 <StringItem index="1" value="USD - Dollar Amerika"/>
                 <StringItem index="2" value="EUR - Euro"/>
@@ -247,6 +253,12 @@
                 <StringItem index="7" value="RUB - Rusia"/>
                 <StringItem index="8" value="BRL - Brazil"/>
                 <StringItem index="9" value="ZAR - Afrika Selatan"/>
+                <StringItem index="10" value="ZMK - Zambia"/>
+                <StringItem index="11" value="CAD - Canadian"/>
+                <StringItem index="12" value="NGN - Nigerian"/>
+                <StringItem index="13" value="MXN - Mexcan Peso"/>
+                <StringItem index="14" value="CHF - Swiss Franc"/>
+                <StringItem index="15" value="AUD - Australian"/>
               </StringArray>
             </Property>
           </Properties>

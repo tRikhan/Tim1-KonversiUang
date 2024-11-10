@@ -4,6 +4,11 @@
  */
 package KonversiUangTim1_ANT;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author pc
@@ -106,11 +111,11 @@ public class KonversiUang extends javax.swing.JFrame {
         jPanel3.add(jTextJumlahUang, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 40, 710, 60));
 
         jComboBoxMenjadiUang.setFont(new java.awt.Font("Segoe UI", 1, 25)); // NOI18N
-        jComboBoxMenjadiUang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "IDR - Indonesia", "USD - Dollar Amerika", "EUR - Euro", "GBP - Inggris", "JPY - Jepang", "CNY - China", "INR - India", "RUB - Rusia", "BRL - Brazil", "ZAR - Afrika Selatan" }));
+        jComboBoxMenjadiUang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "IDR - Indonesia", "USD - Dollar Amerika", "EUR - Euro", "GBP - Inggris", "JPY - Jepang", "CNY - China", "INR - India", "RUB - Rusia", "BRL - Brazil", "ZAR - Afrika Selatan", "ZMK - Zambia", "CAD - Canadian", "NGN - Nigerian", "MXN - Mexcan Peso", "CHF - Swiss Franc", "AUD - Australian" }));
         jPanel3.add(jComboBoxMenjadiUang, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 190, 710, 60));
 
         jComboBoxDariUang.setFont(new java.awt.Font("Segoe UI", 1, 25)); // NOI18N
-        jComboBoxDariUang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "IDR - Indonesia", "USD - Dollar Amerika", "EUR - Euro", "GBP - Inggris", "JPY - Jepang", "CNY - China", "INR - India", "RUB - Rusia", "BRL - Brazil", "ZAR - Afrika Selatan" }));
+        jComboBoxDariUang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "IDR - Indonesia", "USD - Dollar Amerika", "EUR - Euro", "GBP - Inggris", "JPY - Jepang", "CNY - China", "INR - India", "RUB - Rusia", "BRL - Brazil", "ZAR - Afrika Selatan", "ZMK - Zambia", "CAD - Canadian", "NGN - Nigerian", "MXN - Mexcan Peso", "CHF - Swiss Franc", "AUD - Australian" }));
         jPanel3.add(jComboBoxDariUang, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 120, 710, 60));
 
         getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, 1170, 300));
@@ -129,9 +134,16 @@ public class KonversiUang extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+private JFrame frame;
     private void tmblKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tmblKeluarActionPerformed
         // TODO add your handling code here:
+        frame = new JFrame("Exit");
+        
+        if(JOptionPane.showConfirmDialog(frame,"Apakah anda ingin keluar?", "Currency Converter",
+                JOptionPane.YES_NO_OPTION)==JOptionPane.YES_NO_OPTION){
+            System.exit(0);
+        }
+        
     }//GEN-LAST:event_tmblKeluarActionPerformed
 
     private void tmblKonversiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tmblKonversiActionPerformed
@@ -140,8 +152,32 @@ public class KonversiUang extends javax.swing.JFrame {
 
     private void tmblResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tmblResetActionPerformed
         // TODO add your handling code here:
+        jTextJumlahUang.setText("");
+        jTextJumlahTerkonversi.setText("");
+        jComboBoxDariUang.setSelectedIndex(-1);
+        jComboBoxMenjadiUang.setSelectedIndex(-1);
     }//GEN-LAST:event_tmblResetActionPerformed
-
+//------------------------------------------------------------------------------------------------------------------------
+    public double convertCurrency(double amount, String fromCurrency, String toCurrency){
+        Map<String, Double> conversionRate = new HashMap<>();
+        conversionRate.put("GBP", 1.0);
+        conversionRate.put("CAD", 1.78);
+        conversionRate.put("NGN", 1674.54);
+        conversionRate.put("MXN", 29.39);
+        conversionRate.put("EUR", 1.35);
+        conversionRate.put("CHF", 1.45);
+        conversionRate.put("AUD", 1.89);
+        conversionRate.put("CNY", 9.09);
+        conversionRate.put("INR", 107.93);
+        conversionRate.put("USD", 1.57);
+        
+        if(!conversionRate.containsKey(fromCurrency) || !conversionRate.containsKey(toCurrency)){
+            throw new IllegalArgumentException("Invalid Currency Node");
+        }
+        return amount * conversionRate.get(toCurrency) / conversionRate.get(fromCurrency);
+    }
+//-------------------------------------------------------------------------------------------------------------------------    
+    
     /**
      * @param args the command line arguments
      */
