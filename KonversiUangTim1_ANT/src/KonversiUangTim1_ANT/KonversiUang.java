@@ -4,6 +4,13 @@
  */
 package KonversiUangTim1_ANT;
 
+import javax.swing.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.util.HashMap;
@@ -116,6 +123,11 @@ public class KonversiUang extends javax.swing.JFrame {
 
         jComboBoxDariUang.setFont(new java.awt.Font("Segoe UI", 1, 25)); // NOI18N
         jComboBoxDariUang.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "IDR - Indonesia", "USD - Dollar Amerika", "EUR - Euro", "GBP - Inggris", "JPY - Jepang", "CNY - China", "INR - India", "RUB - Rusia", "BRL - Brazil", "ZAR - Afrika Selatan", "ZMK - Zambia", "CAD - Canadian", "NGN - Nigerian", "MXN - Mexcan Peso", "CHF - Swiss Franc", "AUD - Australian" }));
+        jComboBoxDariUang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxDariUangActionPerformed(evt);
+            }
+        });
         jPanel3.add(jComboBoxDariUang, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 120, 710, 60));
 
         getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, 1170, 300));
@@ -148,9 +160,9 @@ private JFrame frame;
 
     private void tmblKonversiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tmblKonversiActionPerformed
         double amount;
-    String fromCurrency;
-    String toCurrency;
-    double convertAmount;
+        String fromCurrency;
+        String toCurrency;
+        double convertAmount;
 
     try {
         amount = Double.parseDouble(jTextJumlahUang.getText());
@@ -179,19 +191,33 @@ private JFrame frame;
         jComboBoxDariUang.setSelectedIndex(-1);
         jComboBoxMenjadiUang.setSelectedIndex(-1);
     }//GEN-LAST:event_tmblResetActionPerformed
+
+    private void jComboBoxDariUangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxDariUangActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxDariUangActionPerformed
 //------------------------------------------------------------------------------------------------------------------------
     public double convertCurrency(double amount, String fromCurrency, String toCurrency){
         Map<String, Double> conversionRate = new HashMap<>();
+        // Base currency is GBP (1.0)
         conversionRate.put("GBP", 1.0);
-        conversionRate.put("CAD", 1.78);
-        conversionRate.put("NGN", 1674.54);
-        conversionRate.put("MXN", 29.39);
-        conversionRate.put("EUR", 1.35);
-        conversionRate.put("CHF", 1.45);
-        conversionRate.put("AUD", 1.89);
-        conversionRate.put("CNY", 9.09);
-        conversionRate.put("INR", 107.93);
-        conversionRate.put("USD", 1.57);
+        
+        // Conversion rates (as of November 2024, approximate values)
+        conversionRate.put("IDR", 20160.50);  // Indonesian Rupiah
+        conversionRate.put("USD", 1.27);      // US Dollar
+        conversionRate.put("EUR", 1.20);      // Euro
+        conversionRate.put("JPY", 190.60);    // Japanese Yen
+        conversionRate.put("CNY", 9.22);      // Chinese Yuan
+        conversionRate.put("INR", 107.50);    // Indian Rupee
+        conversionRate.put("RUB", 135.75);    // Russian Ruble
+        conversionRate.put("BRL", 7.60);      // Brazilian Real
+        conversionRate.put("ZAR", 23.01);     // South African Rand
+        conversionRate.put("ZMK", 34.20);     // Zambian Kwacha
+        conversionRate.put("CAD", 1.76);      // Canadian Dollar
+        conversionRate.put("NGN", 2144.20);   // Nigerian Naira
+        conversionRate.put("MXN", 25.35);     // Mexican Peso
+        conversionRate.put("CHF", 1.12);      // Swiss Franc
+        conversionRate.put("AUD", 1.95);      // Australian Dollar
+        
         
         if(!conversionRate.containsKey(fromCurrency) || !conversionRate.containsKey(toCurrency)){
             throw new IllegalArgumentException("Invalid Currency Node");
