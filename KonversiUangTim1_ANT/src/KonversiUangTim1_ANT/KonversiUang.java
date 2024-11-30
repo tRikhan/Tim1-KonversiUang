@@ -21,14 +21,121 @@ import java.util.Map;
  * @author pc
  */
 public class KonversiUang extends javax.swing.JFrame {
+    // API key for ExchangeRate-API (you MUST replace this)
+    private static final String API_KEY = "GANTI API KEY"; // Replace with your actual API key
+    
+    // Cache to store exchange rates to reduce API calls
+    private Map<String, Double> rateCache = new HashMap<>();
 
-    /**
-     * Creates new form KonversiUang
-     */
+    // Keep all your existing constructor and initComponents() method unchanged
     public KonversiUang() {
         initComponents();
+        // Optional: Load rates when application starts
+        loadInitialRates();
+    }
+    
+    private void loadInitialRates() {
+        try {
+            rateCache = fetchExchangeRates("USD");
+        } catch (Exception e) {
+            // Fallback to default rates if API call fails
+            rateCache = getDefaultRates();
+        }
     }
 
+    // Method to fetch exchange rates from API
+    private Map<String, Double> fetchExchangeRates(String baseCurrency) {
+        Map<String, Double> rates = new HashMap<>();
+        
+        try {
+            String apiUrl = String.format("https://v6.exchangerate-api.com/v6/%s/latest/%s", API_KEY, baseCurrency);
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            
+            // Check for successful connection
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new RuntimeException("HTTP error code : " + connection.getResponseCode());
+            }
+            
+            // Read the response
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            reader.close();
+            
+            // Manually parse the JSON-like response
+            String responseStr = response.toString();
+            
+            // Supported currencies
+            String[] supportedCurrencies = {
+                "IDR", "USD", "EUR", "GBP", "JPY", "CNY", "INR", 
+                "RUB", "BRL", "ZAR", "ZMK", "CAD", "NGN", "MXN", "CHF", "AUD"
+            };
+            
+            // Manually extract rates for supported currencies
+            for (String currency : supportedCurrencies) {
+                String searchStr = "\"" + currency + "\":";
+                int currencyIndex = responseStr.indexOf(searchStr);
+                if (currencyIndex != -1) {
+                    // Extract the rate value
+                    int valueStart = currencyIndex + searchStr.length();
+                    int valueEnd = responseStr.indexOf(",", valueStart);
+                    if (valueEnd == -1) {
+                        valueEnd = responseStr.indexOf("}", valueStart);
+                    }
+                    
+                    try {
+                        double rate = Double.parseDouble(
+                            responseStr.substring(valueStart, valueEnd).trim()
+                        );
+                        rates.put(currency, rate);
+                    } catch (NumberFormatException e) {
+                        // Skip if rate can't be parsed
+                    }
+                }
+            }
+            
+            return rates;
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error fetching exchange rates: " + e.getMessage(), 
+                "Connection Error", 
+                JOptionPane.ERROR_MESSAGE);
+            return getDefaultRates(); // Fallback to default rates
+        }
+    }
+    
+    // Fallback method with default rates
+    private Map<String, Double> getDefaultRates() {
+        Map<String, Double> conversionRate = new HashMap<>();
+        // Base currency is USD (1.0)
+        conversionRate.put("USD", 1.0);
+        
+        // Conversion rates (as of November 2024, approximate values)
+        conversionRate.put("IDR", 20160.50);  // Indonesian Rupiah
+        conversionRate.put("USD", 1.27);      // US Dollar
+        conversionRate.put("EUR", 1.20);      // Euro
+        conversionRate.put("JPY", 190.60);    // Japanese Yen
+        conversionRate.put("CNY", 9.22);      // Chinese Yuan
+        conversionRate.put("INR", 107.50);    // Indian Rupee
+        conversionRate.put("RUB", 135.75);    // Russian Ruble
+        conversionRate.put("BRL", 7.60);      // Brazilian Real
+        conversionRate.put("ZAR", 23.01);     // South African Rand
+        conversionRate.put("ZMK", 34.20);     // Zambian Kwacha
+        conversionRate.put("CAD", 1.76);      // Canadian Dollar
+        conversionRate.put("NGN", 2144.20);   // Nigerian Naira
+        conversionRate.put("MXN", 25.35);     // Mexican Peso
+        conversionRate.put("CHF", 1.12);      // Swiss Franc
+        conversionRate.put("AUD", 1.95);      // Australian Dollar
+        
+        return conversionRate;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -196,33 +303,44 @@ private JFrame frame;
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxDariUangActionPerformed
 //------------------------------------------------------------------------------------------------------------------------
-    public double convertCurrency(double amount, String fromCurrency, String toCurrency){
-        Map<String, Double> conversionRate = new HashMap<>();
-        // Base currency is GBP (1.0)
-        conversionRate.put("GBP", 1.0);
-        
-        // Conversion rates (as of November 2024, approximate values)
-        conversionRate.put("IDR", 20160.50);  // Indonesian Rupiah
-        conversionRate.put("USD", 1.27);      // US Dollar
-        conversionRate.put("EUR", 1.20);      // Euro
-        conversionRate.put("JPY", 190.60);    // Japanese Yen
-        conversionRate.put("CNY", 9.22);      // Chinese Yuan
-        conversionRate.put("INR", 107.50);    // Indian Rupee
-        conversionRate.put("RUB", 135.75);    // Russian Ruble
-        conversionRate.put("BRL", 7.60);      // Brazilian Real
-        conversionRate.put("ZAR", 23.01);     // South African Rand
-        conversionRate.put("ZMK", 34.20);     // Zambian Kwacha
-        conversionRate.put("CAD", 1.76);      // Canadian Dollar
-        conversionRate.put("NGN", 2144.20);   // Nigerian Naira
-        conversionRate.put("MXN", 25.35);     // Mexican Peso
-        conversionRate.put("CHF", 1.12);      // Swiss Franc
-        conversionRate.put("AUD", 1.95);      // Australian Dollar
-        
-        
-        if(!conversionRate.containsKey(fromCurrency) || !conversionRate.containsKey(toCurrency)){
-            throw new IllegalArgumentException("Invalid Currency Node");
+    public double convertCurrency(double amount, String fromCurrency, String toCurrency) {
+        // If cache is empty or doesn't contain rates, fetch new rates
+        if (rateCache.isEmpty()) {
+            rateCache = fetchExchangeRates("USD"); // Use USD as base currency
         }
-        return amount * conversionRate.get(toCurrency) / conversionRate.get(fromCurrency);
+        
+        // If still no rates, use default rates
+        if (rateCache.isEmpty()) {
+            rateCache = getDefaultRates();
+        }
+        
+        // Validate currencies
+        if (!rateCache.containsKey(fromCurrency) || !rateCache.containsKey(toCurrency)) {
+            throw new IllegalArgumentException("Invalid Currency: " + 
+                (!rateCache.containsKey(fromCurrency) ? fromCurrency : toCurrency));
+        }
+        
+        // Perform conversion using fetched rates
+        double fromRate = rateCache.get(fromCurrency);
+        double toRate = rateCache.get(toCurrency);
+        
+        return amount * (toRate / fromRate);
+    }
+
+    // Optional: Add a method to manually refresh rates
+    private void refreshExchangeRates() {
+        try {
+            rateCache = fetchExchangeRates("USD");
+            JOptionPane.showMessageDialog(this, 
+                "Exchange rates updated successfully!", 
+                "Rates Refreshed", 
+                JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Failed to refresh rates: " + e.getMessage(), 
+                "Refresh Error", 
+                JOptionPane.ERROR_MESSAGE);
+        }
     }
 //-------------------------------------------------------------------------------------------------------------------------    
     
