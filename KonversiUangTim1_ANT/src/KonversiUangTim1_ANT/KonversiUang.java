@@ -147,7 +147,29 @@ private JFrame frame;
     }//GEN-LAST:event_tmblKeluarActionPerformed
 
     private void tmblKonversiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tmblKonversiActionPerformed
-        // TODO add your handling code here:
+        double amount;
+    String fromCurrency;
+    String toCurrency;
+    double convertAmount;
+
+    try {
+        amount = Double.parseDouble(jTextJumlahUang.getText());
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Masukkan angka yang valid", "Eksklamasi", JOptionPane.ERROR_MESSAGE);
+        jTextJumlahUang.setText("");
+        jTextJumlahUang.requestFocus();
+        return;
+    }
+
+    fromCurrency = jComboBoxDariUang.getSelectedItem().toString().substring(0, 3);
+    toCurrency = jComboBoxMenjadiUang.getSelectedItem().toString().substring(0, 3);
+
+    try {
+        convertAmount = convertCurrency(amount, fromCurrency, toCurrency);
+        jTextJumlahTerkonversi.setText(String.format("%.2f %s = %.2f %s", amount, fromCurrency, convertAmount, toCurrency));
+    } catch (IllegalArgumentException ex) {
+        JOptionPane.showMessageDialog(this, "Konversi mata uang tidak valid!", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_tmblKonversiActionPerformed
 
     private void tmblResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tmblResetActionPerformed
