@@ -32,6 +32,7 @@ public class KonversiUang extends javax.swing.JFrame {
         initComponents();
         // Optional: Load rates when application starts
         loadInitialRates();
+        jTextJumlahTerkonversi.setEditable(false);
     }
     
     private void loadInitialRates() {
